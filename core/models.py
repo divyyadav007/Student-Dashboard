@@ -31,6 +31,12 @@ class Enrollment(models.Model):
     def __str__(self):
         # This readable label helps identify an enrollment quickly.
         return f"{self.user.username} - {self.course.name}"
+
+    @property
+    def is_low_attendance(self):
+        if self.attendance:
+            return self.attendance.attendance_percentage < 75
+        return False
     
 
 # Attendance stores attendance details for one enrollment.
