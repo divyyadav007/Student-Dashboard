@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "student_dashboard",
+      "src": "dashboard_project/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "student_dashboard/wsgi.py"
+      "dest": "dashboard_project/wsgi.py"
     }
   ]
 }
