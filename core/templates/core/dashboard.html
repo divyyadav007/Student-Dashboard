@@ -1,71 +1,87 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
-<div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">Welcome, {{ request.user.username }}!</h4>
-    </div>
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="card-title mb-0">Your Enrolled Courses</h5>
-        <a href="{% url 'export_pdf' %}" class="btn btn-success btn-sm">📄 Download Report (PDF)</a>
+<div class="max-w-7xl mx-auto space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <h1 class="text-4xl lg:text-5xl font-black text-white tracking-tighter">System Overview.</h1>
+        <div class="flex gap-2">
+            <a href="{% url 'add_course' %}" class="glass-card px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/5 transition-all">
+    + Add Course
+</a><a href="{% url 'export_pdf' %}" class="glass-card px-4 py-2 rounded-xl text-xs font-bold hover:bg-white/5 transition-all">
+    Generate Report
+</a>
+            </button>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-600/20">New Note</button>
+        </div>
     </div>
 
-        <table class="table table-striped mt-3">
-            <thead>
-                <tr>
-                    <th>Course Name</th>
-                    <th>Credits</th>
-                    <th>Attendance</th>
-                    <th>Grade</th> 
-                    <th>Date Enrolled</th>
-                </tr>
-            </thead>
-            
-            <tbody hx-get="{% url 'dashboard_table' %}" hx-trigger="every 5s" hx-swap="innerHTML">
-                {% include 'core/partials/table_data.html' %}
-            </tbody>
-            
-        </table>
-        </table>
-        <hr class="my-5">
-        <h5 class="card-title mb-3">Course Credits Overview</h5>
+    <div class="grid grid-cols-12 gap-6">
+        
+        <div class="col-span-12 md:col-span-4 glass-card rounded-[2.5rem] p-8 flex flex-col justify-between">
+            <div class="flex items-center gap-2 text-orange-400">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span class="text-[10px] font-black uppercase tracking-widest">Attendance Alert</span>
+            </div>
+            <div class="mt-4">
+                <p class="text-sm text-slate-500 italic">"You are below 75% in 2 subjects. Take action soon."</p>
+            </div>
+        </div>
 
-        <div style="position: relative; height:300px; width:100%">
-            <canvas id="myChart"></canvas>
+        {% for enrollment in enrollments %}
+        <div class="col-span-12 md:col-span-4 glass-card rounded-[2.5rem] p-8 space-y-4 group transition-all">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-white">{{ enrollment.course.name }}</h3>
+                <span class="text-[10px] px-2 py-1 bg-blue-500/10 text-blue-400 rounded-lg font-bold">{{ enrollment.course.credits }} CR</span>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between text-xs font-bold">
+                    <span>Attendance</span>
+                    <span class="{% if enrollment.attendance.attendance_percentage < 75 %}text-red-500{% else %}text-green-500{% endif %}">
+                        {{ enrollment.attendance.attendance_percentage }}%
+                    </span>
+                </div>
+                <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-full bg-blue-600 rounded-full" style="width: {{ enrollment.attendance.attendance_percentage }}%"></div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="col-span-12 md:col-span-7 glass-card rounded-[2.5rem] p-10">
+            <h3 class="text-sm font-black uppercase tracking-widest text-slate-500 mb-6 text-center">Upcoming Deadlines</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 group hover:border-blue-500/30 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="size-2 rounded-full bg-red-500 animate-ping"></div>
+                        <div>
+                            <p class="text-white font-bold text-sm">DBMS Assignment 3</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Due in 2 days</p>
+                        </div>
+                    </div>
+                    <button class="text-[10px] font-black text-blue-400">SUBMIT</button>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <div class="flex items-center gap-4">
+                        <div class="size-2 rounded-full bg-slate-500"></div>
+                        <div>
+                            <p class="text-white font-bold text-sm">Web Tech Project</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Oct 28, 2026</p>
+                        </div>
+                    </div>
+                    <button class="text-[10px] font-black text-slate-600">PENDING</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-5 glass-card rounded-[2.5rem] p-8 flex flex-col h-full bg-gradient-to-br from-blue-900/20 to-transparent border-blue-500/10">
+            <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-4 text-center">Quick Notes</h3>
+            <textarea class="flex-1 bg-transparent border-none focus:ring-0 text-sm text-slate-300 resize-none placeholder:text-slate-700" placeholder="Type something important..."></textarea>
+            <div class="pt-4 border-t border-white/5 text-[10px] text-slate-600 flex justify-between">
+                <span>Last saved: 2m ago</span>
+                <span class="text-blue-500 font-bold">Auto-sync ON</span>
+            </div>
         </div>
 
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Variables ka naam 'labels' aur 'data' hi rakhna hai
-    const labels = {{ course_names| safe }};
-    const data = {{ course_credits| safe }};
-
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels, // Yahan chart aapke 'labels' variable ko use karta hai
-            datasets: [{
-                label: 'Course Credits',
-                data: data, // Yahan 'data' variable use hota hai
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                borderRadius: 4
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
-                }
-            }
-        }
-    });
-</script>
 {% endblock %}

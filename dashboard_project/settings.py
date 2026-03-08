@@ -10,57 +10,78 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+# Path helps us build reliable file-system paths.
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR points to the root folder of the Django project.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# These settings are fine for development but should be hardened for production.
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Django uses this secret key for security-related signing.
 SECRET_KEY = 'django-insecure-9*#zpv9eaxt+436gn3pp++l$t^8)^x9yy8%-___2su=_0gn&fe'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG=True shows detailed error pages while developing.
 DEBUG = True
 
+# ALLOWED_HOSTS lists domains that are allowed to serve this app.
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
 
 
-# Application definition
+# INSTALLED_APPS tells Django which built-in and custom apps are active.
 
 INSTALLED_APPS = [
+    # Admin site for managing data.
     'django.contrib.admin',
+    # Authentication system for users, login, logout, and permissions.
     'django.contrib.auth',
+    # Required for Django models.
     'django.contrib.contenttypes',
+    # Session storage keeps users logged in across requests.
     'django.contrib.sessions',
+    # Flash messages such as success or error alerts.
     'django.contrib.messages',
+    # Static file support for CSS, JS, and images.
     'django.contrib.staticfiles',
+    # Your custom app containing models, views, and templates.
     'core',
-    
-
 ]
 
+# MIDDLEWARE is the request/response pipeline that every request passes through.
 MIDDLEWARE = [
+    # Adds security-related protections.
     'django.middleware.security.SecurityMiddleware',
+    # Reads and writes session data.
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Handles common HTTP improvements such as APPEND_SLASH.
     'django.middleware.common.CommonMiddleware',
+    # Protects POST forms against CSRF attacks.
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Attaches the logged-in user to request.user.
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Enables Django's messages framework.
     'django.contrib.messages.middleware.MessageMiddleware',
+    # Protects against clickjacking in iframes.
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Serves static files efficiently when deployed with WhiteNoise.
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
+# ROOT_URLCONF points Django to the main URL file.
 ROOT_URLCONF = 'dashboard_project.urls'
 
+# TEMPLATES controls how Django finds and renders HTML templates.
 TEMPLATES = [
     {
+        # Use Django's built-in template engine.
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # Extra template folders can be added here if needed.
         'DIRS': [],
+        # APP_DIRS=True lets Django search inside each app's templates folder.
         'APP_DIRS': True,
         'OPTIONS': {
+            # Context processors automatically inject common data into templates.
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -71,60 +92,72 @@ TEMPLATES = [
     },
 ]
 
+# WSGI_APPLICATION points to the deployment entry point for WSGI servers.
 WSGI_APPLICATION = 'dashboard_project.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+# DATABASES defines where project data is stored.
 
 DATABASES = {
+    # The project uses SQLite for a simple file-based database.
     'default': {
+        # This backend means SQLite database engine.
         'ENGINE': 'django.db.backends.sqlite3',
+        # The database file lives in the project root.
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+# These validators block weak passwords during signup or password changes.
 
 AUTH_PASSWORD_VALIDATORS = [
     {
+        # Prevents passwords that look too similar to user details.
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
+        # Requires a minimum password length.
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
+        # Blocks very common passwords.
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
+        # Blocks fully numeric passwords.
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
+# Language used by Django's default text.
 
 LANGUAGE_CODE = 'en-us'
 
+# Time zone used for stored dates and times.
 TIME_ZONE = 'UTC'
 
+# Enables translation support.
 USE_I18N = True
 
+# Stores datetimes with timezone awareness.
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+# URL prefix used when Django serves static files.
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+# Default type for automatically created primary keys.
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Anonymous users are redirected to the route named login when a view requires auth.
+LOGIN_URL = 'login'
+
+# After login, users are sent to the route named dashboard.
 LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'login'
+
+# After logout, users are sent back to the landing page.
+LOGOUT_REDIRECT_URL = 'landing'
