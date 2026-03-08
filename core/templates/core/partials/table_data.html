@@ -1,0 +1,25 @@
+{% for enrollment in enrollments %}
+<tr>
+    <td>{{ enrollment.course.name }}</td>
+    <td>{{ enrollment.course.credits }}</td>
+    <td>
+        {% if enrollment.attendance %}
+            {{ enrollment.attendance.attendance_percentage }}%
+        {% else %}
+            <span class="text-muted">N/A</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if enrollment.grade %}
+            <span class="badge bg-success fs-6">{{ enrollment.grade }}</span>
+        {% else %}
+            <span class="badge bg-secondary fs-6">Pending</span>
+        {% endif %}
+    </td>
+    <td>{{ enrollment.date }}</td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" class="text-center text-muted">No courses enrolled yet.</td>
+</tr>
+{% endfor %}
