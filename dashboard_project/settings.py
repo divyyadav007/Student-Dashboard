@@ -104,7 +104,7 @@ DATABASES = {
         # This backend means SQLite database engine.
         'ENGINE': 'django.db.backends.sqlite3',
         # The database file lives in the project root.
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME':'/tmp/db.sqlite3',
     }
 }
 
